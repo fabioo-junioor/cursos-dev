@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Eventos</title>
+    <link rel="stylesheet" href="/css/estilo.css">
+    <script src="/js/vue.min.js"></script>
+</head>
+<body class="exercicio">
+    <div id="app">
+        <p>{{cont}}</p>
+        <p>
+            <button v-on:click="add">+1</button>
+            <button @click="cont -=2">-2</button>
+        </p>
+        <p @mousemove="atualizarPos">
+            Coordenadas: {{x}} e {{y}}
+            <span @mousemove.stop>Aqui nao</span>
+        </p>
+        <input type="text" @keyup.enter="alerta">
+    </div>
+    <script>
+        new Vue({
+            el: "#app",
+            data: {
+                x: 0,
+                y: 0,
+                cont: 0
+            },
+            methods: {
+                add(){
+                    return this.cont += 1
+                },
+                atualizarPos(e){
+                    this.x = e.clientX
+                    this.y = e.clientY
+                },
+                alerta(){
+                    alert('Enter!')
+                }
+            }
+        })
+    </script>
+</body>
+</html>

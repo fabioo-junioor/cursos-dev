@@ -1,0 +1,38 @@
+<meta charset="utf-8">
+
+<!-- development version, includes helpful console warnings -->
+<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+
+<div id="app"></div>
+
+<script>
+    const vm = new Vue({
+        template: `
+        <div>
+            <h1>{{aula}}</h1>
+            <h2>{{modulo}}</h2>
+            <button @click="alterarAula">Alterar Aula</button>
+            <button @click="alterarModulo">Alterar Modulo</button>
+        </div>
+
+        `,
+        el: '#app',
+        data: {
+            aula: 'Aula: Montando Instancia vue',
+            modulo: 'Modulo: Instância vue'
+
+        },
+        methods: {
+            alterarAula(){
+                this.aula += ' # '
+
+            },
+            alterarModulo(){
+                this.modulo += ' # '
+
+            }
+        }
+    })
+    //vm.$mount('#app')
+    vm.$mount()
+</script>

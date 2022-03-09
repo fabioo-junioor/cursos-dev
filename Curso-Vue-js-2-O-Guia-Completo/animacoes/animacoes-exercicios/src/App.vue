@@ -1,10 +1,10 @@
 <template>
 	<div id="app" class="container-fluid">
 		<h1>Animações</h1>
+		<!--
 		<hr>
 		<b-button variant="primary" class="mb-3"
 			@click="exibir = !exibir">Mostrar Mensagem</b-button>
-		<!--
 		<transition name="fade" appear>
 			<b-alert variant="info" 
 				show v-if="exibir">{{msg}}</b-alert>
@@ -20,7 +20,6 @@
 				show v-if="exibir">{{msg}}</b-alert>
 		</transition>
 		<hr>
-		-->
 		<b-select v-model="tipoAnimacao">
 			<option value="fade">Fade</option>
 			<option value="slide">Slide</option>
@@ -34,7 +33,7 @@
 		</transition>
 
 		<hr>
-		<button @click="exibir2 = !exibir2">Mostrar</button>
+		<button @click="exibir2 = !exibir2">Alternado</button>
 		<transition
 			:css="false" 
 			@before-enter="beforeEnter"
@@ -50,28 +49,76 @@
 
 			</div>
 		</transition>
+		<hr>
+		<div class="mb-4">
+			<b-button variant="primary" class="mr-2" 
+				@click="componenteSelecionado = 'AlertaInfo'">Info</b-button>
+			<b-button variant="primary" 
+				@click="componenteSelecionado = 'AlertaAdvertencia'">Advertencia</b-button>
+		</div>
+		<transition name="fade" mode="out-in">
+			<component :is="componenteSelecionado"></component>
+		</transition>
+		-->
+		<hr>
+		<b-button class="mb-4" 
+			@click="adicionarAluno">Adiconar Aluno</b-button>
+			<transition-group name="slide" tag="div">
+				<b-list-group v-for="(aluno, i) in alunos" :key="aluno">
+					<b-list-group-item @click="removerAluno(i)">{{aluno}}</b-list-group-item>
+				</b-list-group>
+			</transition-group>
 	</div>
 </template>
 
 <script>
+import AlertaAdvertencia from './AlertaAdvertencia.vue'
+import AlertaInfo from './AlertaInfo.vue'
 
 export default {
+	components: {AlertaAdvertencia, AlertaInfo},
 	data(){
 		return{
+			alunos: ['Roberto', 'Julia', 'Teresa', 'Paulo'],
 			msg: 'Uma mensagem de informação para o usuario!',
 			exibir: false,
 			exibir2: true,
-			tipoAnimacao: 'fade'
+			tipoAnimacao: 'fade',
+			larguraBase: 0,
+			componenteSelecionado: 'AlertaInfo'
 		}
 	},
 	methods: {
+		adicionarAluno(){
+			const s = Math.random().toString(36).substring(2)
+			this.alunos.push(s)
+
+		},
+		removerAluno(indice){
+			this.alunos.splice(indice, 1)
+
+		},
+		animar(el, done, negativo){
+			let rodada = 1
+			const temp = setInterval(() => {
+				const novaLargura = this.larguraBase + 
+					(negativo ? -rodada * 10 : rodada *10)
+				el.style.width = `${novaLargura}px`
+				rodada++
+				if(rodada > 30){
+					clearInterval(temp)
+					done()
+				}
+			}, 20)
+
+		},
 		beforeEnter(el){
-			console.log('before enter')
+			this.larguraBase = 0
+			el.style.width = `${this.larguraBase}px`
 
 		},
 		enter(el, done){
-			console.log('enter')
-			done()
+			this.animar(el, done, false)
 
 		},
 		afterEnter(el){
@@ -83,12 +130,12 @@ export default {
 
 		},
 		beforeLeave(el){
-			console.log('before leave')
+			this.larguraBase = 300
+			el.style.width = `${this.larguraBase}px`
 
 		},
 		leave(el, done){
-			console.log('leave')
-			done()
+			this.animar(el, done, true)
 
 		},
 		afterLeave(el){
@@ -162,10 +209,15 @@ export default {
 	transition: opacity 2s;
 }
 .slide-leave-active{
+	position: absolute;
+	width: 100%;
 	animation: slide-out 2s ease;
 	transition: opacity 2s;
 }
 .slide-enter, .slide-leave-to{
 	opacity: 0;
+}
+.slide-move{
+	transition: transform 1s;
 }
 </style>
